@@ -1,6 +1,6 @@
 const INITIAL_STATE = {
     neoCount : 0,
-    neoElements : {}
+    neoElements : []
 };
   
 export default (state = INITIAL_STATE, action) => {

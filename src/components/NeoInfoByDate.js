@@ -1,34 +1,39 @@
 import React, { Component } from 'react';
 import { Text, View, FlatList } from 'react-native';
+import { connect } from 'react-redux';
 import { Card, CardSection, Button } from './common';
 
-const NeoInfoByDate = (props) => {
+class NeoInfoByDate extends Component {
 
-    const { date, elements } = props.neoInfoItem;
-    const { onPress, isActive } = props;
+    renderNeoItem({item}){
+        return(        
+            <CardSection>
+                <Text style={{ padding:5 }}>
+                    {item.name}
+                </Text>
+            </CardSection>
+        );
+    }
 
-    const renderNeoItem = ({item}) => (
-        <CardSection>
-            <Text style={{ padding:5 }}>
-                {item.name}
-            </Text>
-        </CardSection>
-    );
-    
-    return (
-        <View>
-            <Button onPress = {() => {onPress(date)}}>{ date }</Button>
-            {isActive && 
-            <Card>
-                <FlatList
-                    data={ elements }
-                    renderItem={ renderNeoItem }
-                    keyExtractor={(item, index) => item.id}
-                />
-            </Card>
-            }
-        </View>
-    );
+    render(){
+        return (
+            <View style={{flex:1}}>
+                <Card>
+                    <FlatList
+                        data={ this.props.activeElements }
+                        renderItem={ this.renderNeoItem }
+                        keyExtractor={(item, index) => item.id}
+                    />
+                </Card>
+            </View>
+        );
+    }
 };
 
-export default NeoInfoByDate;
+const mapStateToProps = (state, props) => {
+    return { 
+        activeElements : (state.neoInfo.neoElements.find(dateObj => dateObj.date === props.date))['elements']
+    };
+};
+
+export default connect( mapStateToProps )( NeoInfoByDate );

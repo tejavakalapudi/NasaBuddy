@@ -1,10 +1,8 @@
 import React, { Component } from 'react';
 import { Text, View, FlatList } from 'react-native';
 import { connect } from 'react-redux';
-
-import { Card, CardSection, Button } from './common';
-import NeoInfoByDate from './NeoInfoByDate';
-
+import { Actions } from 'react-native-router-flux';
+import { Card, CardSection, SquareText } from './common';
 
 class NeoInfo extends Component {
 
@@ -17,18 +15,24 @@ class NeoInfo extends Component {
     }
 
     onDateSelected(date) {
-        this.setState({
-            activeDate : date
-        });
+        Actions.neoByDate({ date, title: `Neo's on ${date}` });
+    }
+
+    getDateByFormat( date ) {
+        const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+        const dateInstance = new Date( date );
+        const month = months[ dateInstance.getMonth() ];
+        
+        return `${month} ${dateInstance.getDate()}th`
     }
 
     renderItemByDate({item}) {
         return(
-            <NeoInfoByDate 
-                neoInfoItem={item}
-                onPress={(date) => { this.onDateSelected(date) }}
-                isActive={item.date === this.state.activeDate}
-            />
+            <View style={{flex:1}}>
+                <SquareText onPress = {() => { this.onDateSelected( item.date ) }}>
+                    { `${this.getDateByFormat( item.date )} (${item.elements.length})` }
+                </SquareText>
+            </View>
         );
     }
 
@@ -62,6 +66,7 @@ class NeoInfo extends Component {
                         data={ neoElements }
                         renderItem={this.renderItemByDate.bind(this)}
                         extraData={this.state.activeDate}
+                        horizontal={true}
                     />                    
                 </CardSection>
     
