@@ -4,6 +4,7 @@ import { Card, CardSection, Button } from './common';
 import { fetchAPOD, fetchNeoFeed } from '../actions';
 import { connect } from 'react-redux';
 import APOD from './APOD';
+import NeoInfo from './NeoInfo';
 
 class HomeScreen extends Component {
 
@@ -13,25 +14,19 @@ class HomeScreen extends Component {
     }
     
     render(){
+        console.log("======", this.props.neoInfo);
         return(
-            <ScrollView>
+            <ScrollView style={{backgroundColor: '#fff'}}>
                 <APOD apod={this.props.apodInfo}/>
-                <Card>
-                    <CardSection>        
-                        <Text style={{fontWeight:"bold", fontSize: 14, color: "black", lineHeight: 20}}>
-                            Number of Asteroids based on their closest approach date to Earth (Next 7 days)
-                        </Text>
-                    </CardSection>
-                    <CardSection>
-                        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', height:200}}>
-                            <Text style={{fontWeight:"bold", fontSize: 40, color: "#1abc9c"}}>
-                                {this.props.neoInfo.neoCount}
-                            </Text>
-                        </View>
-                    </CardSection>
-                </Card>
+                <NeoInfo/>
             </ScrollView>
         );
+    }
+}
+
+const styles = {
+    containerStyle : {
+
     }
 }
 
@@ -42,4 +37,4 @@ const mapStateToProps = (state) => {
     };
 };
   
-export default connect( mapStateToProps, { fetchAPOD, fetchNeoFeed } )(HomeScreen);
+export default connect( mapStateToProps, { fetchAPOD, fetchNeoFeed } )( HomeScreen );
