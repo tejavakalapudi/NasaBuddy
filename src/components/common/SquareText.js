@@ -16,7 +16,7 @@ const SquareText = ({ onPress, children }) => {
 const styles = {
   textStyle: {
     alignSelf: 'center',
-    color: '#1b1e21',
+    color: '#343a40',
     fontSize: 16,
     fontWeight: '600'
   },

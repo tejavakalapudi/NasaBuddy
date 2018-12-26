@@ -7,7 +7,7 @@ const RouterComponent = () => {
   return (
     <Router sceneStyle={{ paddingTop: 85 }}>
       <Scene>
-        <Scene key="home" component={HomeScreen} title="Nasa Buddy" />
+        <Scene key="home" component={HomeScreen} title="Nasa Buddy" initial/>
         <Scene key="neoByDate" component={NeoInfoByDate}/>
       </Scene>
     </Router>

@@ -6,16 +6,8 @@ import { Card, CardSection, SquareText } from './common';
 
 class NeoInfo extends Component {
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            activeDate : "null",
-
-        }
-    }
-
     onDateSelected(date) {
-        Actions.neoByDate({ date, title: `Neo's on ${date}` });
+        Actions.neoByDate({ date, title: `Neo's on ${this.getDateByFormat(date)}` });
     }
 
     getDateByFormat( date ) {
@@ -23,7 +15,7 @@ class NeoInfo extends Component {
         const dateInstance = new Date( date );
         const month = months[ dateInstance.getMonth() ];
         
-        return `${month} ${dateInstance.getDate()}th`
+        return `${month} ${dateInstance.getDate()}`;
     }
 
     renderItemByDate({item}) {
@@ -65,7 +57,6 @@ class NeoInfo extends Component {
                     <FlatList
                         data={ neoElements }
                         renderItem={this.renderItemByDate.bind(this)}
-                        extraData={this.state.activeDate}
                         horizontal={true}
                     />                    
                 </CardSection>
