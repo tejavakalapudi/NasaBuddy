@@ -58,6 +58,8 @@ class Apod extends Component {
                     display= {this.state.modalVisible}
                     image={ url || "https://api.nasa.gov/images/apod.jpg" }
                     closeModal={this.toggleModal.bind(this)}
+                    showText={true}
+                    explanation={explanation}
                 />
             </Card>
         );
