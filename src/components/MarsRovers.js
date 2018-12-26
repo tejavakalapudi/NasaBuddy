@@ -17,7 +17,7 @@ class MarsRovers extends Component {
     toggleModal(item){
         this.setState({
             modalVisible : !this.state.modalVisible,
-            activeImgSrc : item.item.img_src
+            activeImgSrc : item && item.item ? item.item.img_src : ""
         });
     }
 
@@ -50,6 +50,7 @@ class MarsRovers extends Component {
                     <DisplayModal 
                         display= {this.state.modalVisible}
                         image={this.state.activeImgSrc}
+                        closeModal={this.toggleModal.bind(this)}
                     />                    
                 </CardSection>
             );
@@ -72,6 +73,8 @@ class MarsRovers extends Component {
             "Mardi",
             "Rhaz"
         ];
+
+        console.log("==========", this.props)
 
         return (
             <Card>

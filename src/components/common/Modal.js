@@ -1,5 +1,5 @@
 import React from 'react'
-import { Modal, View, Image, Text, StyleSheet } from 'react-native';
+import { Modal, View, Image, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { ScaledImage } from '../common';
 
 const DisplayModal = (props) => (
@@ -13,6 +13,9 @@ const DisplayModal = (props) => (
                 width = {400}
             />
         </View>
+        <Text style={styles.text} onPress={props.closeModal}>
+            Close
+        </Text>
     </Modal>
 )
 
@@ -24,8 +27,9 @@ const styles = StyleSheet.create({
         flexDirection : 'column'
     },
     text: {
-        fontSize: 20,
-        marginLeft: 150
+        position: 'absolute',
+        right: 20,
+        top: 50,
     }
 })
 
