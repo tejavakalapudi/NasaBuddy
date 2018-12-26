@@ -58,11 +58,6 @@ class MarsRovers extends Component {
     }
 
     render() {
-        const { 
-            headingContainerStyle, 
-            textStyle,
-            camHeadingStyle
-        } = styles;
 
         const cameras = [
             "Fhaz",
@@ -74,12 +69,10 @@ class MarsRovers extends Component {
             "Rhaz"
         ];
 
-        console.log("==========", this.props)
-
         return (
-            <Card>
+            <Card style={{maxHeight: 400}}>
                 <CardSection>
-                    <Text style={ textStyle }>Images from MARS</Text>
+                    <Text style={ styles.textStyle }>Images from MARS</Text>
                 </CardSection>
                 <FlatList
                     data={ cameras }

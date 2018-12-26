@@ -10,6 +10,12 @@ export default (state = INITIAL_STATE, action) => {
             for( key in action.payload.neoElements ){
                 neoElements.push({ date: key, elements: action.payload.neoElements[key], key });
             }
+
+            //sort elements from today to future
+            neoElements.sort((a,b) => {
+                return new Date(a.date) - new Date(b.date);
+            });
+
             return { 
                 ...state, 
                 neoCount : action.payload.neoCount, 
