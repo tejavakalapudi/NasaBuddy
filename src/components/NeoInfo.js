@@ -53,14 +53,13 @@ class NeoInfo extends Component {
                     </View>
                 </CardSection>
     
-                <CardSection style={{maxHeight: 500}}>
+                <CardSection>
                     <FlatList
                         data={ neoElements }
                         renderItem={this.renderItemByDate.bind(this)}
                         horizontal={true}
                     />                    
                 </CardSection>
-    
             </Card>
         );
     }

@@ -5,7 +5,12 @@ const INITIAL_STATE = {
     imagesByChemCam : [],
     imagesByMahli : [],
     imagesByMardi : [],
-    imagesByRhaz : []
+    imagesByRhaz : [],
+    imagesByPanCam : [],
+    imagesByMinites : [],
+    selectedRover : 'Curiosity',
+    requestInProgress : false,
+    roverInfo: {}
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -45,6 +50,34 @@ export default (state = INITIAL_STATE, action) => {
                 ...state, 
                 imagesByRhaz: action.payload
             };
+        case "PANCAM_IMAGES_SUCCESS":
+            return { 
+                ...state, 
+                imagesByPanCam: action.payload
+            };
+        case "MINITES_IMAGES_SUCCESS":
+            return { 
+                ...state, 
+                imagesByMinites: action.payload
+            };
+        case "ROVER_SELECTED":
+            return{
+                ...state,
+                selectedRover: action.roverName
+            }
+        case "RESET_ALL_CAMS":
+            return INITIAL_STATE;
+
+        case "TOGGLE_REQUEST_STATUS":
+            return {
+                ...state,
+                requestInProgress: !state.requestInProgress
+            }
+        case "SET_ROVER_INFO":
+            return{
+                ...state,
+                roverInfo: action.payload
+            }
         default:
             return state;
     }

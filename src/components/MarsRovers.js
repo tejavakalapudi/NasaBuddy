@@ -1,7 +1,17 @@
 import React, { Component } from 'react';
-import { Text, ScrollView, Image, Linking, View, TouchableOpacity, FlatList } from 'react-native';
-import { Card, CardSection, Button, DisplayModal } from './common';
 import { connect } from 'react-redux';
+import { Actions } from 'react-native-router-flux';
+import { 
+    Text, 
+    ScrollView, 
+    Image, 
+    Linking, 
+    View, 
+    TouchableOpacity, 
+    FlatList 
+} from 'react-native';
+import { selectRover } from '../actions';
+import { Card, CardSection, Button, DisplayModal, SquareText, Spinner } from './common';
 
 class MarsRovers extends Component {
 
@@ -32,14 +42,20 @@ class MarsRovers extends Component {
         );
     }
 
-    renderImagesByCamera(item){
-        const imageFolderName = `imagesBy${item.item}`;
+    navigateToRoversPage(){
+        Actions.rovers({isNavigated : true});
+    }
+
+    renderImagesByCamera(item){  
+        const imageFolderName = `imagesBy${item.item.name}`;
 
         if( this.props.marsInfo[ imageFolderName ].length > 0 ){
             return(
                 <CardSection style={{maxHeight: 300, flexDirection: 'column'}}>
                     <View>
-                        <Text style={ styles.camHeadingStyle }>{`From ${item.item}`}</Text>
+                        <Text style={ styles.camHeadingStyle }>
+                            {`From ${item.item.name} (${item.item.full_name})`}
+                        </Text>
                     </View>
                     <FlatList
                         data={ this.props.marsInfo[ imageFolderName ] }
@@ -57,29 +73,128 @@ class MarsRovers extends Component {
         }
     }
 
+    onRoverSelected(roverName){
+        this.props.selectRover( roverName );
+    }
+
+    renderRoverSelectionBar({item}) {
+        return(
+            <View style={{flex:1}}>
+                <SquareText 
+                    textCss={{
+                        fontSize : 12, 
+                        fontWeight: '500',
+                        color: this.props.marsInfo.selectedRover === item ? '#fff' : '#343a40',
+                        opacity: this.props.marsInfo.requestInProgress && this.props.marsInfo.selectedRover !== item ? 0.5 : 1
+                    }}
+                    buttonCss={{
+                        width:100, 
+                        height:40,
+                        backgroundColor: this.props.marsInfo.selectedRover === item ? '#336EA9' : '#fff',
+                        borderColor: this.props.marsInfo.selectedRover === item ? '#336EA9' : '#fff'
+                    }}
+                    onPress={this.onRoverSelected.bind(this, item)}
+                    isDisabled={this.props.marsInfo.requestInProgress}
+                >
+                    {item}
+                </SquareText>
+            </View>
+        );
+    }
+
     render() {
 
-        const cameras = [
-            "Fhaz",
-            "NavCam",
-            "Mast",
-            "ChemCam",
-            "Mahli",
-            "Mardi",
-            "Rhaz"
-        ];
+        const cameras = [{
+            "name": "Fhaz",
+            "full_name": "Front Hazard Avoidance Camera"
+        }, {
+            "name": "NavCam",
+            "full_name": "Navigation Camera"
+        }, {
+            "name": "Mast",
+            "full_name": "Mast Camera"
+        }, {
+            "name": "ChemCam",
+            "full_name": "Chemistry and Camera Complex"
+        }, {
+            "name": "Mahli",
+            "full_name": "Mars Hand Lens Imager"
+        }, {
+            "name": "Mardi",
+            "full_name": "Mars Descent Imager"
+        }, {
+            "name": "Rhaz",
+            "full_name": "Rear Hazard Avoidance Camera"
+        },{
+            "name": "PanCam",
+            "full_name": "Panoramic Camera"
+        },{
+            "name": "Minites",
+            "full_name": "Miniature Thermal Emission Spectrometer"
+        }];
 
         return (
-            <Card style={{maxHeight: 400}}>
-                <CardSection>
-                    <Text style={ styles.textStyle }>Images from MARS</Text>
-                </CardSection>
-                <FlatList
-                    data={ cameras }
-                    renderItem={ this.renderImagesByCamera.bind(this) }
-                    keyExtractor={(item, index) => '' + index}
-                /> 
-            </Card>
+            <ScrollView>
+                <Card>
+                    <CardSection>
+                        <Text style={ styles.textStyle }>Images from MARS</Text>
+                    </CardSection>
+
+                    {this.props.isNavigated && 
+                    <CardSection style={{ alignItems: 'center', flexDirection: 'column'}}>
+                        <FlatList
+                            data={['Curiosity', 'Opportunity', 'Spirit']}
+                            renderItem={this.renderRoverSelectionBar.bind(this)}
+                            horizontal={true}
+                            keyExtractor={(item, index) => '' + index}
+                        />
+
+                        {this.props.marsInfo.roverInfo.name &&
+                            <Text style={[styles.roverInfoStyle, {fontWeight: 'bold'}]}>
+                                {`Rover Name: ${this.props.marsInfo.roverInfo.name}`} 
+                            </Text>
+                        }
+                        {this.props.marsInfo.roverInfo.launch_date &&
+                            <Text style={styles.roverInfoStyle}>
+                                {`Launched on: ${this.props.marsInfo.roverInfo.launch_date}`} 
+                            </Text>
+                        }
+                        {this.props.marsInfo.roverInfo.landing_date &&
+                            <Text style={styles.roverInfoStyle}>
+                                {`Landed on: ${this.props.marsInfo.roverInfo.landing_date}`} 
+                            </Text>
+                        }
+                        {this.props.marsInfo.roverInfo.status &&
+                            <Text style={[styles.roverInfoStyle, {textTransform: 'capitalize'}]}>
+                                {`Current Status: ${this.props.marsInfo.roverInfo.status}`} 
+                            </Text>  
+                        }
+                    </CardSection>
+                    }
+
+                    {this.props.marsInfo.requestInProgress && this.props.isNavigated &&
+                    <CardSection>
+                        <Spinner size="small"/>
+                    </CardSection>
+                    }
+
+                    <FlatList
+                        data={ cameras }
+                        renderItem={ this.renderImagesByCamera.bind(this) }
+                        keyExtractor={(item, index) => '' + index}
+                        scrollEnabled={false}
+                        style={{maxHeight: this.props.isNavigated ? '100%' : 275 }}
+                    />
+
+                    {!this.props.isNavigated && 
+                    <CardSection style={ {justifyContent: 'flex-end'}}>
+                        <TouchableOpacity onPress={this.navigateToRoversPage}>
+                            <Text style={styles.camHeadingStyle}>For more Rovers, Cams, SOLs, Dates...</Text>
+                        </TouchableOpacity>
+                    </CardSection>
+                    } 
+                </Card>
+            </ScrollView>
         );
     }
 };
@@ -101,6 +216,13 @@ const styles = {
         lineHeight: 20,
         marginTop: 3,
         marginBottom: 5 
+    },
+    roverInfoStyle: { 
+        fontSize: 12, 
+        color: 'black', 
+        lineHeight: 15,
+        marginTop: 3,
+        flex: 1
     }
 };
 
@@ -110,4 +232,4 @@ const mapStateToProps = (state) => {
     };
 };
   
-export default connect( mapStateToProps)( MarsRovers );
+export default connect( mapStateToProps, { selectRover } )( MarsRovers );
