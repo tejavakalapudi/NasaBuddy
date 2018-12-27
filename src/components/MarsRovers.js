@@ -27,16 +27,16 @@ class MarsRovers extends Component {
     toggleModal(item){
         this.setState({
             modalVisible : !this.state.modalVisible,
-            activeImgSrc : item && item.item ? item.item.img_src : ""
+            activeImgSrc : item ? item.img_src : ""
         });
     }
 
-    renderImage(item){
+    renderImage({item}){
         return(
             <TouchableOpacity style={{flex: 1}} onPress={this.toggleModal.bind(this, item)}>
                 <Image
                     style={{height:100, width:100, marginRight: 5}}
-                    source={{ uri: item.item.img_src }}
+                    source={{ uri: item.img_src }}
                 />
             </TouchableOpacity>
         );
@@ -46,15 +46,15 @@ class MarsRovers extends Component {
         Actions.rovers({isNavigated : true});
     }
 
-    renderImagesByCamera(item){  
-        const imageFolderName = `imagesBy${item.item.name}`;
+    renderImagesByCamera({item}){
+        const imageFolderName = `imagesBy${item.name}`;
 
         if( this.props.marsInfo[ imageFolderName ].length > 0 ){
             return(
                 <CardSection style={{maxHeight: 300, flexDirection: 'column'}}>
                     <View>
                         <Text style={ styles.camHeadingStyle }>
-                            {`From ${item.item.name} (${item.item.full_name})`}
+                            {`From ${item.name} (${item.full_name})`}
                         </Text>
                     </View>
                     <FlatList
@@ -172,7 +172,7 @@ class MarsRovers extends Component {
                     </CardSection>
                     }
 
-                    {this.props.marsInfo.requestInProgress && this.props.isNavigated &&
+                    {this.props.marsInfo.requestInProgress &&
                     <CardSection>
                         <Spinner size="small"/>
                     </CardSection>
@@ -183,7 +183,7 @@ class MarsRovers extends Component {
                         renderItem={ this.renderImagesByCamera.bind(this) }
                         keyExtractor={(item, index) => '' + index}
                         scrollEnabled={false}
-                        style={{maxHeight: this.props.isNavigated ? '100%' : 275 }}
+                        style={{maxHeight: this.props.isNavigated ? '100%' : 280, minHeight: 280}}
                     />
 
                     {!this.props.isNavigated && 

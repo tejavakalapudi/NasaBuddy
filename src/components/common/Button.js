@@ -23,10 +23,10 @@ const styles = {
     paddingBottom: 5
   },
   buttonStyle: {
-    backgroundColor: '#ffc107',
+    backgroundColor: '#336EA9',
     borderRadius: 15,
     borderWidth: 1,
-    borderColor: '#ffc107',
+    borderColor: '#336EA9',
     marginLeft: 150,
     marginRight: 150,
     marginBottom: 5,

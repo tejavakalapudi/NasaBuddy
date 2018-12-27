@@ -54,7 +54,7 @@ class Apod extends Component {
                         <Text style={{ fontWeight: 'bold', fontSize: 12}}>Click for HD</Text>
                     </TouchableOpacity>
                 </CardSection>
-                <DisplayModal 
+                <DisplayModal
                     display= {this.state.modalVisible}
                     image={ url || "https://api.nasa.gov/images/apod.jpg" }
                     closeModal={this.toggleModal.bind(this)}

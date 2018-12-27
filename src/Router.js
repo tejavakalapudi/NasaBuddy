@@ -14,7 +14,7 @@ const RouterComponent = () => {
       <Scene>
         <Scene key="home" component={HomeScreen} title="Nasa Buddy" initial/>
         <Scene key="neoByDate" component={NeoInfoByDate}/>
-        <Scene key="rovers" component={MarsRovers}/>
+        <Scene key="rovers" component={MarsRovers} title="Mars Rovers"/>
       </Scene>
     </Router>
   );

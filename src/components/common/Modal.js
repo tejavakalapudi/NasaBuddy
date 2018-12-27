@@ -1,5 +1,5 @@
 import React from 'react'
-import { Modal, View, Image, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { Modal, View, Image, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { ScaledImage } from '../common';
 
 const DisplayModal = (props) => (
