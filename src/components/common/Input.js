@@ -24,20 +24,22 @@ const styles = {
     color: '#000',
     paddingRight: 5,
     paddingLeft: 5,
-    fontSize: 18,
+    fontSize: 10,
     lineHeight: 23,
     flex: 2
   },
   labelStyle: {
-    fontSize: 18,
+    fontSize: 10,
     paddingLeft: 20,
     flex: 1
   },
   containerStyle: {
-    height: 40,
-    flex: 1,
+    height: 35,
+    width: 230,
     flexDirection: 'row',
-    alignItems: 'center'
+    alignItems: 'center',
+    borderColor: '#ddd',
+    borderWidth: 1
   }
 };
 

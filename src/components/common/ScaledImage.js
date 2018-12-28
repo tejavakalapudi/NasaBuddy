@@ -1,16 +1,18 @@
 import React, { Component, PropTypes } from "react";
-import { Image } from "react-native";
+import { Image, ScrollView, View } from "react-native";
+import ImageLoad from 'react-native-image-placeholder';
 
 class ScaledImage extends Component {
     constructor(props) {
         super(props);
-        this.state = { 
+        this.state = {
+            realImageLoaded : false
         };
     }
 
     componentWillMount() {
         Image.getSize(this.props.uri, (width, height) => {
-            if (this.props.width && !this.props.height) {
+            if (this.props.width && !this.props.height ) {
                 this.setState({
                     width: this.props.width,
                     height: height * (this.props.width / width)
@@ -26,11 +28,14 @@ class ScaledImage extends Component {
         });
     }
 
+    componentWillUnmount(){
+    }
+
     render() {
         return (
-            <Image
-                source = {{ uri: this.props.uri }}
-                style={{ height: this.state.height, width: this.state.width }}
+            <ImageLoad
+                style={{ height: this.state.height || 400, width: this.state.width || 400 }}
+                source={{ uri: this.props.uri }}
             />
         );
     }

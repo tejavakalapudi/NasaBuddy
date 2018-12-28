@@ -7,18 +7,25 @@ const DisplayModal = (props) => (
         visible={ props.display } animationType = "slide" 
         onRequestClose={ () => console.log('closed') }
     >
-        <View style={styles.contentContainer}>
+        <ScrollView 
+            contentContainerStyle={styles.contentContainer}
+            maximumZoomScale={5} 
+            scrollEnabled={true} 
+            minimumZoomScale={1} 
+            showsHorizontalScrollIndicator={false} 
+            showsVerticalScrollIndicator={false}
+        >
             <ScaledImage 
                 uri = {props.image}
                 width = {400}
             />
             { 
-                props.showText && props.explanation && 
-                <Text style={styles.textStyle}>
-                    {props.explanation}
-                </Text>
+            props.showText && props.explanation && 
+            <Text style={styles.textStyle}>
+                {props.explanation}
+            </Text>
             }
-        </View>
+        </ScrollView>
         <Text style={styles.closeButton} onPress={props.closeModal}>
             Close
         </Text>   
