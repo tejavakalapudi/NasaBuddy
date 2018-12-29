@@ -1,17 +1,19 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Actions } from 'react-native-router-flux';
-import DatePicker from 'react-native-datepicker';
+import ImageLoad from 'react-native-image-placeholder';
 import { 
     Text, 
     ScrollView, 
-    Image, 
-    Linking, 
+    Image,
     View, 
     TouchableOpacity, 
     FlatList 
 } from 'react-native';
-import { selectRover } from '../actions';
+import { 
+    selectRover,
+    updateSolAndEarthDate
+} from '../actions';
 import { 
     Card, 
     CardSection, 
@@ -19,7 +21,8 @@ import {
     DisplayModal, 
     SquareText, 
     Spinner,
-    Input 
+    DateInput,
+    PickerWithLabel 
 } from './common';
 
 class MarsRovers extends Component {
@@ -30,9 +33,12 @@ class MarsRovers extends Component {
         this.state = {
             modalVisible : false,
             activeImgSrc : "",
-            sortBy : "SO",
-            selectedDateOrSol : "",
-            currentDate: "2016-05-15"
+            sortBy : "SOL",
+            selectedSol : this.props.marsInfo.selectedSol,
+            currentDate: "2016-05-15",
+            pickerOpen: false,
+            isDefaultDate: true,
+            isDefaultSol: true
         }
     }
 
@@ -53,16 +59,18 @@ class MarsRovers extends Component {
     
     toggleSortBy(){
         this.setState({
-            sortBy: this.state.sortBy === 'SOL' ? 'Date' : 'SOL'
+            sortBy: this.state.sortBy === 'SOL' ? 'Date' : 'SOL',
+            isDefaultDate: true
         });
     }
 
     renderImage({item}){
         return(
             <TouchableOpacity style={{flex: 1}} onPress={this.toggleModal.bind(this, item)}>
-                <Image
+                <ImageLoad
                     style={{height:100, width:100, marginRight: 5}}
                     source={{ uri: item.img_src }}
+                    isShowActivity={false}
                 />
             </TouchableOpacity>
         );
@@ -120,6 +128,67 @@ class MarsRovers extends Component {
         );
     }
 
+    togglePicker(){
+        this.setState({
+            pickerOpen: !this.state.pickerOpen,
+            selectedSol : this.props.marsInfo.selectedSol
+        });
+    }
+
+    updateSelectedSol(value){
+        this.setState({
+            selectedSol: value
+        });
+    }
+
+    updateSortByValue(value){
+        if(this.state.sortBy === 'SOL'){
+            this.togglePicker();
+            this.setState({
+                isDefaultSol: false
+            })
+            this.props.updateSolAndEarthDate({
+                date: 'none',
+                sol: this.state.selectedSol,
+                sortBy: this.state.sortBy
+            });
+        } else {
+            this.setState({
+                currentDate: value,
+                isDefaultDate: false
+            });
+            this.props.updateSolAndEarthDate({
+                date: value,
+                sol: 1000,
+                sortBy: this.state.sortBy
+            });
+        }
+        this.props.selectRover( this.props.marsInfo.selectedRover );
+    }
+
+    hasQueryResults(){
+
+        let queryHasResults = false;
+
+        const arrOfImages = [
+            'imagesByFhaz',
+            'imagesByNavCam',
+            'imagesByMast',
+            'imagesByChemCam',
+            'imagesByMahli',
+            'imagesByMardi',
+            'imagesByRhaz',
+            'imagesByPanCam',
+            'imagesByMinites'
+        ];
+
+        queryHasResults = arrOfImages.some((camImages) => {
+            return this.props.marsInfo[camImages].length > 0;
+        });
+
+        return queryHasResults;   
+    }
+
     render() {
 
         return (
@@ -138,79 +207,74 @@ class MarsRovers extends Component {
                             keyExtractor={(item, index) => '' + index}
                         />
 
-                        {this.props.marsInfo.roverInfo.name &&
+                        {this.props.marsInfo.selectedRover &&
                             <Text style={[styles.roverInfoStyle, {fontWeight: 'bold'}]}>
-                                {`Rover Name: ${this.props.marsInfo.roverInfo.name}`} 
+                                {`Rover Name: ${this.props.marsInfo.selectedRover}`} 
                             </Text>
                         }
-                        {this.props.marsInfo.roverInfo.launch_date &&
+                        {this.props.marsInfo.roverInfo.launch_date && !this.props.marsInfo.requestInProgress && 
                             <Text style={styles.roverInfoStyle}>
                                 {`Launched on: ${this.props.marsInfo.roverInfo.launch_date}`} 
                             </Text>
                         }
-                        {this.props.marsInfo.roverInfo.landing_date &&
+                        {this.props.marsInfo.roverInfo.landing_date && !this.props.marsInfo.requestInProgress && 
                             <Text style={styles.roverInfoStyle}>
                                 {`Landed on: ${this.props.marsInfo.roverInfo.landing_date}`} 
                             </Text>
                         }
-                        {this.props.marsInfo.roverInfo.status &&
+                        {this.props.marsInfo.roverInfo.status && !this.props.marsInfo.requestInProgress && 
                             <Text style={[styles.roverInfoStyle, {textTransform: 'capitalize'}]}>
                                 {`Current Status: ${this.props.marsInfo.roverInfo.status}`} 
+                            </Text>  
+                        }
+                        {this.props.marsInfo.selectedSol &&
+                            <Text style={[styles.roverInfoStyle, {fontWeight: 'bold', color: 'green'}]}>
+                                {`Sorted by ${
+                                    this.props.marsInfo.selectedSol === 'none' ? 
+                                    'Earth Date' : 'SOL'
+                                }: ${ 
+                                this.props.marsInfo.selectedSol === 'none' ? 
+                                this.props.marsInfo.selectedEarthDate : 
+                                this.props.marsInfo.selectedSol}`
+                                } 
                             </Text>  
                         }
                     </CardSection>
                     }
 
-                    {this.props.isNavigated && 
-                    <CardSection style={{flexDirection: 'row', justifyContent: 'space-around'}}>
-                        <View style={{justifyContent: 'center'}}>
-                            <TouchableOpacity onPress={this.toggleSortBy.bind(this)}>
-                                <Text style={{color: '#336EA9', fontSize: 12}}>Toggle Date/Sol</Text>
-                            </TouchableOpacity>
-                        </View> 
-                        {this.state.sortBy === 'SOL' && 
-                            <Input
-                                placeholder={`Max - ${this.props.marsInfo.roverInfo.max_sol}`}
-                                label={`Enter ${this.state.sortBy}`}
-                                value={this.state.selectedDateOrSol}
-                            />
-                        }
-                        {this.state.sortBy !== 'SOL' && 
-                            <DatePicker
-                                style={{
-                                    height: 35,
-                                    width: 230,
-                                    borderColor: '#ddd',
-                                    borderWidth: 1
-                                }}
-                                date={this.state.currentDate}
-                                mode="date"
-                                placeholder={`Max - ${this.props.marsInfo.roverInfo.max_date}`}
-                                format="YYYY-MM-DD"
-                                minDate={this.props.marsInfo.roverInfo.landing_date}
-                                maxDate={this.props.marsInfo.roverInfo.max_date}
-                                confirmBtnText="Confirm"
-                                cancelBtnText="Cancel"
-                                customStyles={{
-                                    dateInput: {
-                                        borderWidth: 0
-                                    },
-                                    dateText:{
-                                        color: '#000',
-                                        paddingRight: 5,
-                                        paddingLeft: 5,
-                                        fontSize: 10,
-                                        lineHeight: 23,
-                                        paddingTop: 0,
-                                        marginTop: 0
-                                    }
-                                // ... You can check the source to find the other keys.
-                                }}
-                                showIcon= {false}
-                                onDateChange={(date) => {this.setState({currentDate: date})}}
-                            />
-                        }   
-                    </CardSection>
+                    {this.props.isNavigated && !this.props.marsInfo.requestInProgress && 
+                        <CardSection style={{flexDirection: 'row', justifyContent: 'space-around'}}>
+                            <View style={{justifyContent: 'center'}}>
+                                <TouchableOpacity onPress={this.toggleSortBy.bind(this)}>
+                                    <Text style={{color: '#336EA9', fontSize: 12}}>Toggle Date/Sol</Text>
+                                </TouchableOpacity>
+                            </View> 
+                            {this.state.sortBy === 'SOL' && 
+                                <PickerWithLabel
+                                    label={`${this.state.sortBy}`}
+                                    selectedValue={this.props.marsInfo.selectedSol}
+                                    maxSol={this.props.marsInfo.roverInfo.max_sol}
+                                    placeholder={`Max - ${this.props.marsInfo.roverInfo.max_sol}`}
+                                    confirmButton={this.updateSortByValue.bind(this)}
+                                    togglePicker={this.togglePicker.bind(this)}
+                                    updateValue={this.updateSelectedSol.bind(this)}
+                                    isPickerLaunched={this.state.pickerOpen}
+                                    isDefaultSol={this.state.isDefaultSol}
+                                    pickerValue={this.state.selectedSol}
+                                />
+                            }
+                            {this.state.sortBy !== 'SOL' && 
+                                <DateInput
+                                    placeholder={`Max - ${this.props.marsInfo.roverInfo.max_date}`}
+                                    label={`${this.state.sortBy}`}
+                                    currentDate={this.state.currentDate}
+                                    minDate={this.props.marsInfo.roverInfo.landing_date}
+                                    maxDate={this.props.marsInfo.roverInfo.max_date}
+                                    onDateChange={this.updateSortByValue.bind(this)}
+                                    isDefaultDate={this.state.isDefaultDate}
+                                />
+                            }  
+                        </CardSection>
                     }
 
                     {this.props.marsInfo.requestInProgress &&
@@ -219,14 +283,20 @@ class MarsRovers extends Component {
                     </CardSection>
                     }
 
-                    <FlatList
-                        data={ cameras }
-                        renderItem={ this.renderImagesByCamera.bind(this) }
-                        keyExtractor={(item, index) => '' + index}
-                        scrollEnabled={false}
-                        style={{maxHeight: this.props.isNavigated ? '100%' : 280, minHeight: 280}}
-                    />
-
+                    {this.hasQueryResults() ?
+                        <FlatList
+                            data={ cameras }
+                            renderItem={ this.renderImagesByCamera.bind(this) }
+                            keyExtractor={(item, index) => '' + index}
+                            scrollEnabled={false}
+                            style={{maxHeight: this.props.isNavigated ? '100%' : 280, minHeight: 280}}
+                        /> :
+                        !this.props.marsInfo.requestInProgress &&
+                        <CardSection style={{ alignItems: 'center', flexDirection: 'column'}}>
+                            <Text style={{flex: 1, fontSize:12, fontWeight: 'bold', marginTop: 10, marginBottom:10 }}>No Results!</Text>
+                            <Text style={{flex: 1, fontSize:12, marginTop: 10, marginBottom:10, textAlign: 'center'}}>Please check a different rover or try sorting with different input</Text>
+                        </CardSection>
+                    }
                     {!this.props.isNavigated && 
                     <CardSection style={ {justifyContent: 'flex-end'}}>
                         <TouchableOpacity onPress={this.navigateToRoversPage}>
@@ -302,4 +372,4 @@ const mapStateToProps = (state) => {
     };
 };
   
-export default connect( mapStateToProps, { selectRover } )( MarsRovers );
+export default connect( mapStateToProps, { selectRover, updateSolAndEarthDate } )( MarsRovers );

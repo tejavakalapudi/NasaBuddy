@@ -8,3 +8,5 @@ export * from './Confirm';
 export * from './SquareText';
 export * from './Modal';
 export * from './ScaledImage';
+export * from './DateInput';
+export * from './PickerWithLabel';

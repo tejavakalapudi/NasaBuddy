@@ -12,9 +12,9 @@ const RouterComponent = () => {
       paddingBottom: 30
     }}>
       <Scene>
-        <Scene key="home" component={HomeScreen} title="Nasa Buddy" initial/>
+        <Scene key="home" component={HomeScreen} title="Home" initial/>
         <Scene key="neoByDate" component={NeoInfoByDate}/>
-        <Scene key="rovers" component={MarsRovers} title="Mars Rovers"/>
+        <Scene key="rovers" component={MarsRovers} title="Rovers"/>
       </Scene>
     </Router>
   );

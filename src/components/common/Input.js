@@ -2,7 +2,7 @@ import React from 'react';
 import { TextInput, View, Text } from 'react-native';
 
 const Input = ({ label, value, onChangeText, placeholder, secureTextEntry }) => {
-  const { inputStyle, labelStyle, containerStyle } = styles;
+  const { inputStyle, labelStyle, containerStyle, SubmitButtonStyle } = styles;
 
   return (
     <View style={containerStyle}>
@@ -35,7 +35,7 @@ const styles = {
   },
   containerStyle: {
     height: 35,
-    width: 230,
+    width: 180,
     flexDirection: 'row',
     alignItems: 'center',
     borderColor: '#ddd',

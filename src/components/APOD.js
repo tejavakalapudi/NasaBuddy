@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Text, ScrollView, Image, Linking, View, TouchableOpacity } from 'react-native';
 import { Card, CardSection, Button, DisplayModal} from './common';
+import ImageLoad from 'react-native-image-placeholder';
 
 class Apod extends Component {
 
@@ -42,9 +43,10 @@ class Apod extends Component {
                 </CardSection>
                 <CardSection style={ imageContainerStyle }>
                     <TouchableOpacity style={{flex: 1}} onPress={this.toggleModal.bind(this)}>
-                        <Image
+                        <ImageLoad
                             style={ imageStyle }
-                            source={{ uri: url || "https://api.nasa.gov/images/apod.jpg" }}
+                            source={{ uri: url }}
+                            isShowActivity={false}
                         />
                     </TouchableOpacity>
                 </CardSection>

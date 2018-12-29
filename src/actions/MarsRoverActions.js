@@ -39,33 +39,42 @@ const setRoverInfo = (payload) => ({
     payload
 });
 
-export const fetchRoverImages = ( roverName, camera ) => {
+export const updateSolAndEarthDate = ({date, sol, sortBy}) =>({
+    type: 'UPDATE_SOL_DATE',
+    date,
+    sol,
+    sortBy
+})
+
+export const fetchRoverImages = ( roverName, camera, sol, earth_date, selectedSortBy ) => {
     return(dispatch) => {
         axios({
             method: 'get',
             url: `https://api.nasa.gov/mars-photos/api/v1/rovers/${roverName}/photos`,
             params: {
                 api_key: API_KEY,
-                sol: 1000,
+                sol: selectedSortBy === 'SOL' ? sol : 'none',
+                earth_date: selectedSortBy !== 'SOL' ? earth_date : 'none',
                 camera
             }
         })
         .then((res) => {
-            if( !roverInfoSet && res.data.photos.length > 0 ){   
-                roverInfoSet = true;
-                dispatch(setRoverInfo(res.data.photos[0].rover));
+            if( !roverInfoSet ){   
+                if( res.data.photos.length > 0 ){
+                    roverInfoSet = true;
+                    dispatch(setRoverInfo(res.data.photos[0].rover));
+                } else {
+                    dispatch(setRoverInfo({}));
+                }   
             }
-
             dispatch( setRoverImagesByCam( camera, res.data.photos ) );
-            
             cameraIndex++;
-            if( cameraIndex === (cameraNames.length)){
+            if( cameraIndex === (cameraNames.length) ){
                 dispatch(toggleRequestStatus());
                 cameraIndex = 0;
             }
         })
         .catch((e) => {
-
             console.log("Error fetching Rover Images", e);
             cameraIndex++;
 
@@ -77,31 +86,10 @@ export const fetchRoverImages = ( roverName, camera ) => {
     }
 }
 
-export const fetchRoverInfo = ( roverName ) => {
-    return(dispatch) => {
-        axios({
-            method: 'get',
-            url: `https://api.nasa.gov/mars-photos/api/v1/manifests/${roverName}`,
-            params: {
-                api_key: API_KEY
-            }
-        })
-        .then((res) => {
-
-            //dispatch( setRoverImagesByCam( camera, res.data.photos ) );
-
-            console.log("Rover Info", res.data);
-
-        })
-        .catch((e) => {
-            console.log("Error fetching Rover Info", e);
-        })
-    }
-}
-
-
 export const selectRover = ( roverName ) => {
-    return(dispatch) => {
+    return(dispatch, getState) => {
+
+        const { selectedEarthDate, selectedSol, selectedSortBy } = getState().marsInfo;
 
         roverInfoSet = false;
         dispatch(resetAllCams());
@@ -109,7 +97,7 @@ export const selectRover = ( roverName ) => {
         //dispatch(fetchRoverInfo( roverName ));
 
         cameraNames.forEach((camera, index) => {
-            dispatch(fetchRoverImages(roverName, camera));
+            dispatch(fetchRoverImages(roverName, camera, selectedSol, selectedEarthDate, selectedSortBy));
         });
         
         dispatch(setSelectedRover( roverName ));

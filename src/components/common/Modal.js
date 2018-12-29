@@ -30,7 +30,7 @@ const DisplayModal = (props) => (
             Close
         </Text>   
     </Modal>
-)
+);
 
 const styles = StyleSheet.create({
     contentContainer: {

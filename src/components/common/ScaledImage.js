@@ -8,27 +8,32 @@ class ScaledImage extends Component {
         this.state = {
             realImageLoaded : false
         };
+        this.componentMounted = false;
     }
 
     componentWillMount() {
+        this.componentMounted = true;
         Image.getSize(this.props.uri, (width, height) => {
-            if (this.props.width && !this.props.height ) {
-                this.setState({
-                    width: this.props.width,
-                    height: height * (this.props.width / width)
-                });
-            } else if (!this.props.width && this.props.height) {
-                this.setState({
-                    width: width * (this.props.height / height),
-                    height: this.props.height
-                });
-            } else {
-                this.setState({ width: width, height: height });
+            if (this.componentMounted){
+                if (this.props.width && !this.props.height) {
+                    this.setState({
+                        width: this.props.width,
+                        height: height * (this.props.width / width)
+                    });
+                } else if (!this.props.width && this.props.height) {
+                    this.setState({
+                        width: width * (this.props.height / height),
+                        height: this.props.height
+                    });
+                } else {
+                    this.setState({ width: width, height: height });
+                }
             }
         });
     }
 
     componentWillUnmount(){
+        this.componentMounted = false;
     }
 
     render() {
@@ -36,6 +41,7 @@ class ScaledImage extends Component {
             <ImageLoad
                 style={{ height: this.state.height || 400, width: this.state.width || 400 }}
                 source={{ uri: this.props.uri }}
+                isShowActivity={false}
             />
         );
     }

@@ -9,6 +9,9 @@ const INITIAL_STATE = {
     imagesByPanCam : [],
     imagesByMinites : [],
     selectedRover : 'Curiosity',
+    selectedEarthDate : 'none',
+    selectedSol: 1000,
+    selectedSortBy: 'SOL',
     requestInProgress : false,
     roverInfo: {}
 };
@@ -66,7 +69,18 @@ export default (state = INITIAL_STATE, action) => {
                 selectedRover: action.roverName
             }
         case "RESET_ALL_CAMS":
-            return INITIAL_STATE;
+            return {
+                ...state,
+                imagesByFhaz : [],
+                imagesByNavCam : [],
+                imagesByMast : [],
+                imagesByChemCam : [],
+                imagesByMahli : [],
+                imagesByMardi : [],
+                imagesByRhaz : [],
+                imagesByPanCam : [],
+                imagesByMinites : []
+            };
 
         case "TOGGLE_REQUEST_STATUS":
             return {
@@ -77,6 +91,13 @@ export default (state = INITIAL_STATE, action) => {
             return{
                 ...state,
                 roverInfo: action.payload
+            }
+        case "UPDATE_SOL_DATE":
+            return{
+                ...state,
+                selectedEarthDate : action.date,
+                selectedSol: action.sol,
+                selectedSortBy: action.sortBy
             }
         default:
             return state;
