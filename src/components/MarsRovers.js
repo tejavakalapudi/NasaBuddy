@@ -78,7 +78,6 @@ class MarsRovers extends Component {
 
     renderImagesByCamera({item}){
         const imageFolderName = `imagesBy${item.name}`;
-
         if( this.props.marsInfo[ imageFolderName ].length > 0 ){
             return(
                 <CardSection style={{maxHeight: 300, flexDirection: 'column'}}>
@@ -92,12 +91,7 @@ class MarsRovers extends Component {
                         renderItem={ this.renderImage.bind(this) }
                         horizontal={true}
                         keyExtractor={(item, index) => '' + item.id}
-                    />
-                    <DisplayModal 
-                        display= {this.state.modalVisible}
-                        image={this.state.activeImgSrc}
-                        closeModal={this.toggleModal.bind(this)}
-                    />                    
+                    />               
                 </CardSection>
             );
         }
@@ -229,11 +223,8 @@ class MarsRovers extends Component {
                         }
                         {this.props.marsInfo.selectedSol &&
                             <Text style={[styles.roverInfoStyle, {fontWeight: 'bold', color: 'green'}]}>
-                                {`Sorted by ${
-                                    this.props.marsInfo.selectedSol === 'none' ? 
-                                    'Earth Date' : 'SOL'
-                                }: ${ 
-                                this.props.marsInfo.selectedSol === 'none' ? 
+                                {`Sorted by ${ this.props.marsInfo.selectedSortBy }: ${ 
+                                this.props.marsInfo.selectedSortBy !== 'SOL' ? 
                                 this.props.marsInfo.selectedEarthDate : 
                                 this.props.marsInfo.selectedSol}`
                                 } 
@@ -305,6 +296,11 @@ class MarsRovers extends Component {
                     </CardSection>
                     } 
                 </Card>
+                <DisplayModal 
+                    display= {this.state.modalVisible}
+                    image={this.state.activeImgSrc}
+                    closeModal={this.toggleModal.bind(this)}
+                />     
             </ScrollView>
         );
     }

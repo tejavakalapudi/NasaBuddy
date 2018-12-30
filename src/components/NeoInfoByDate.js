@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Text, ScrollView, FlatList, TouchableOpacity, View, Modal } from 'react-native';
 import { connect } from 'react-redux';
-import { Card, CardSection, Button } from './common';
+import { Card, CardSection, Button, DisplayModal } from './common';
 
 class NeoInfoByDate extends Component {
 
@@ -30,129 +30,121 @@ class NeoInfoByDate extends Component {
         const item = this.state.activeNeo;
         if( item ){
             return(
-                <Modal
-                    animationType="slide"
-                    transparent={false}
-                    visible={this.state.modalVisible}
+                <DisplayModal
+                    display={this.state.modalVisible}
+                    closeModal={this.onCloseModal.bind(this)}
                 >   
-                    <View style={{flex: 1,marginTop: 100}}>
-                        <Button
-                            onPress={this.onCloseModal.bind(this)}
-                        >
-                            Close
-                        </Button>
-                        <Card style={{flex: 1}}>
-                            <CardSection style = {{ justifyContent: 'center', alignItems: 'center', padding:10, backgroundColor: '#6c757d' }}>
-                                <Text style={{ fontWeight: 'bold', fontSize: 16, color: '#f8f9fa' }}>
-                                    {item.name}
-                                </Text>
-                            </CardSection>
-                            <CardSection style = {{ flexDirection: "column", alignSelf: "stretch", padding:5 }}>
-                                <Text style={{ alignSelf: 'stretch', fontWeight: 'bold', fontSize: 12, marginBottom: 5 }}>
-                                    Absolute Magnitude
-                                </Text>
-                                <Text style={{ alignSelf: 'stretch', fontWeight: '500', fontSize: 14 }}>
-                                    {item.absolute_magnitude_h}
-                                </Text>
-                            </CardSection>
-                            <CardSection style = {{flexDirection: "column", alignSelf: "stretch", padding:5 }}>
-                                <Text style={{ alignSelf: 'stretch', fontWeight: 'bold', fontSize: 12, marginBottom: 5 }}>
-                                    Potentially Hazardous
-                                </Text>
-                                <Text style={{ alignSelf: 'stretch', fontWeight: '500', fontSize: 14, textTransform: 'capitalize' }}>
-                                    {JSON.stringify(item.is_potentially_hazardous_asteroid)}
-                                </Text>
-                            </CardSection>
-    
-                            <CardSection style = {{ flexDirection: "column", alignSelf: "stretch", padding:5 }}>
-                                <Text style={{ alignSelf: 'stretch', fontWeight: 'bold', fontSize: 12, marginBottom: 5 }}>
-                                    Orbiting Body
-                                </Text>
-                                <Text style={{ alignSelf: 'stretch', fontWeight: '500', fontSize: 14 }}>
-                                    {item.close_approach_data[0].orbiting_body}
-                                </Text>
-                            </CardSection>
-    
-                            <CardSection style = {{ flexDirection: "column", alignSelf: "stretch", padding:5 }}>
-                                <Text style={{ alignSelf: 'stretch', fontWeight: 'bold', fontSize: 12, marginBottom: 5 }}>
-                                    Relative Velocity
-                                </Text>
-                                <Text style={{ alignSelf: 'stretch', fontWeight: '500', fontSize: 14 }}>
-                                    {`${item.close_approach_data[0].relative_velocity.kilometers_per_hour} km per hour.`}
-                                </Text>
-                                <Text style={{ alignSelf: 'stretch', fontWeight: '500', fontSize: 14 }}>
-                                    {`${item.close_approach_data[0].relative_velocity.kilometers_per_second} km per second.`}
-                                </Text>
-                                <Text style={{ alignSelf: 'stretch', fontWeight: '500', fontSize: 14 }}>
-                                    {`${item.close_approach_data[0].relative_velocity.miles_per_hour} miles per hour.`}
-                                </Text>
-                            </CardSection>
-    
-                            <CardSection style = {{ flexDirection: "column", alignSelf: "stretch", padding:5 }}>
-                                <Text style={{ alignSelf: 'stretch', fontWeight: 'bold', fontSize: 12, marginBottom: 5 }}>
-                                    Miss Distance
-                                </Text>
-                                <Text style={{ alignSelf: 'stretch', fontWeight: '500', fontSize: 14 }}>
-                                    {`Astronomical: ${item.close_approach_data[0].miss_distance.astronomical}`}
-                                </Text>
-                                <Text style={{ alignSelf: 'stretch', fontWeight: '500', fontSize: 14 }}>
-                                    {`Kilometers: ${item.close_approach_data[0].miss_distance.kilometers}`}
-                                </Text>
-                                <Text style={{ alignSelf: 'stretch', fontWeight: '500', fontSize: 14 }}>
-                                    {`Lunar: ${item.close_approach_data[0].miss_distance.lunar}`}
-                                </Text>
-                                <Text style={{ alignSelf: 'stretch', fontWeight: '500', fontSize: 14 }}>
-                                    {`Miles: ${item.close_approach_data[0].miss_distance.miles}`}
-                                </Text>
-                            </CardSection>
-    
-                            <CardSection style = {{ flexDirection: "column", alignSelf: "stretch", padding:5 }}>
-                                <Text style={{ alignSelf: 'stretch', fontWeight: 'bold', fontSize: 12, marginBottom: 5 }}>
-                                    Maximum Estimated Diameter
-                                </Text>
-                                <Text style={{ alignSelf: 'stretch', fontWeight: '500', fontSize: 14 }}>
-                                    {`Feet: ${item.estimated_diameter.feet.estimated_diameter_max}`}
-                                </Text>
-                                <Text style={{ alignSelf: 'stretch', fontWeight: '500', fontSize: 14 }}>
-                                    {`Kilometers: ${item.estimated_diameter.kilometers.estimated_diameter_max}`}
-                                </Text>
-                                <Text style={{ alignSelf: 'stretch', fontWeight: '500', fontSize: 14 }}>
-                                    {`Meters: ${item.estimated_diameter.meters.estimated_diameter_max}`}
-                                </Text>
-                                <Text style={{ alignSelf: 'stretch', fontWeight: '500', fontSize: 14 }}>
-                                    {`Miles: ${item.estimated_diameter.miles.estimated_diameter_max}`}
-                                </Text>
-                            </CardSection>
-    
-                            <CardSection style = {{ flexDirection: "column", alignSelf: "stretch", padding:5 }}>
-                                <Text style={{ alignSelf: 'stretch', fontWeight: 'bold', fontSize: 12, marginBottom: 5 }}>
-                                    Minimum Estimated Diameter
-                                </Text>
-                                <Text style={{ alignSelf: 'stretch', fontWeight: '500', fontSize: 14 }}>
-                                    {`Feet: ${item.estimated_diameter.feet.estimated_diameter_min}`}
-                                </Text>
-                                <Text style={{ alignSelf: 'stretch', fontWeight: '500', fontSize: 14 }}>
-                                    {`Kilometers: ${item.estimated_diameter.kilometers.estimated_diameter_min}`}
-                                </Text>
-                                <Text style={{ alignSelf: 'stretch', fontWeight: '500', fontSize: 14 }}>
-                                    {`Meters: ${item.estimated_diameter.meters.estimated_diameter_min}`}
-                                </Text>
-                                <Text style={{ alignSelf: 'stretch', fontWeight: '500', fontSize: 14 }}>
-                                    {`Miles: ${item.estimated_diameter.miles.estimated_diameter_min}`}
-                                </Text>
-                            </CardSection>
-    
-                            <CardSection style = {{ flexDirection: "column", alignSelf: "stretch", padding:5 }}>
-                                <Text style={{ alignSelf: 'stretch', fontWeight: 'bold', fontSize: 12, marginBottom: 5 }}>
-                                    NEO Reference ID
-                                </Text>
-                                <Text style={{ alignSelf: 'stretch', fontWeight: '500', fontSize: 14 }}>
-                                    {item.neo_reference_id}
-                                </Text>
-                            </CardSection>
-                        </Card>
-                    </View>
-                </Modal>
+                    <Card>
+                        <CardSection style = {{ justifyContent: 'center', alignItems: 'center', padding:10, backgroundColor: '#6c757d' }}>
+                            <Text style={{ fontWeight: 'bold', fontSize: 16, color: '#f8f9fa' }}>
+                                {item.name}
+                            </Text>
+                        </CardSection>
+                        <CardSection style = {{ flexDirection: "column", alignSelf: "stretch", padding:5 }}>
+                            <Text style={{ alignSelf: 'stretch', fontWeight: 'bold', fontSize: 12, marginBottom: 5 }}>
+                                Absolute Magnitude
+                            </Text>
+                            <Text style={{ alignSelf: 'stretch', fontWeight: '500', fontSize: 14 }}>
+                                {item.absolute_magnitude_h}
+                            </Text>
+                        </CardSection>
+                        <CardSection style = {{flexDirection: "column", alignSelf: "stretch", padding:5 }}>
+                            <Text style={{ alignSelf: 'stretch', fontWeight: 'bold', fontSize: 12, marginBottom: 5 }}>
+                                Potentially Hazardous
+                            </Text>
+                            <Text style={{ alignSelf: 'stretch', fontWeight: '500', fontSize: 14, textTransform: 'capitalize' }}>
+                                {JSON.stringify(item.is_potentially_hazardous_asteroid)}
+                            </Text>
+                        </CardSection>
+
+                        <CardSection style = {{ flexDirection: "column", alignSelf: "stretch", padding:5 }}>
+                            <Text style={{ alignSelf: 'stretch', fontWeight: 'bold', fontSize: 12, marginBottom: 5 }}>
+                                Orbiting Body
+                            </Text>
+                            <Text style={{ alignSelf: 'stretch', fontWeight: '500', fontSize: 14 }}>
+                                {item.close_approach_data[0].orbiting_body}
+                            </Text>
+                        </CardSection>
+
+                        <CardSection style = {{ flexDirection: "column", alignSelf: "stretch", padding:5 }}>
+                            <Text style={{ alignSelf: 'stretch', fontWeight: 'bold', fontSize: 12, marginBottom: 5 }}>
+                                Relative Velocity
+                            </Text>
+                            <Text style={{ alignSelf: 'stretch', fontWeight: '500', fontSize: 14 }}>
+                                {`${item.close_approach_data[0].relative_velocity.kilometers_per_hour} km per hour.`}
+                            </Text>
+                            <Text style={{ alignSelf: 'stretch', fontWeight: '500', fontSize: 14 }}>
+                                {`${item.close_approach_data[0].relative_velocity.kilometers_per_second} km per second.`}
+                            </Text>
+                            <Text style={{ alignSelf: 'stretch', fontWeight: '500', fontSize: 14 }}>
+                                {`${item.close_approach_data[0].relative_velocity.miles_per_hour} miles per hour.`}
+                            </Text>
+                        </CardSection>
+
+                        <CardSection style = {{ flexDirection: "column", alignSelf: "stretch", padding:5 }}>
+                            <Text style={{ alignSelf: 'stretch', fontWeight: 'bold', fontSize: 12, marginBottom: 5 }}>
+                                Miss Distance
+                            </Text>
+                            <Text style={{ alignSelf: 'stretch', fontWeight: '500', fontSize: 14 }}>
+                                {`Astronomical: ${item.close_approach_data[0].miss_distance.astronomical}`}
+                            </Text>
+                            <Text style={{ alignSelf: 'stretch', fontWeight: '500', fontSize: 14 }}>
+                                {`Kilometers: ${item.close_approach_data[0].miss_distance.kilometers}`}
+                            </Text>
+                            <Text style={{ alignSelf: 'stretch', fontWeight: '500', fontSize: 14 }}>
+                                {`Lunar: ${item.close_approach_data[0].miss_distance.lunar}`}
+                            </Text>
+                            <Text style={{ alignSelf: 'stretch', fontWeight: '500', fontSize: 14 }}>
+                                {`Miles: ${item.close_approach_data[0].miss_distance.miles}`}
+                            </Text>
+                        </CardSection>
+
+                        <CardSection style = {{ flexDirection: "column", alignSelf: "stretch", padding:5 }}>
+                            <Text style={{ alignSelf: 'stretch', fontWeight: 'bold', fontSize: 12, marginBottom: 5 }}>
+                                Maximum Estimated Diameter
+                            </Text>
+                            <Text style={{ alignSelf: 'stretch', fontWeight: '500', fontSize: 14 }}>
+                                {`Feet: ${item.estimated_diameter.feet.estimated_diameter_max}`}
+                            </Text>
+                            <Text style={{ alignSelf: 'stretch', fontWeight: '500', fontSize: 14 }}>
+                                {`Kilometers: ${item.estimated_diameter.kilometers.estimated_diameter_max}`}
+                            </Text>
+                            <Text style={{ alignSelf: 'stretch', fontWeight: '500', fontSize: 14 }}>
+                                {`Meters: ${item.estimated_diameter.meters.estimated_diameter_max}`}
+                            </Text>
+                            <Text style={{ alignSelf: 'stretch', fontWeight: '500', fontSize: 14 }}>
+                                {`Miles: ${item.estimated_diameter.miles.estimated_diameter_max}`}
+                            </Text>
+                        </CardSection>
+
+                        <CardSection style = {{ flexDirection: "column", alignSelf: "stretch", padding:5 }}>
+                            <Text style={{ alignSelf: 'stretch', fontWeight: 'bold', fontSize: 12, marginBottom: 5 }}>
+                                Minimum Estimated Diameter
+                            </Text>
+                            <Text style={{ alignSelf: 'stretch', fontWeight: '500', fontSize: 14 }}>
+                                {`Feet: ${item.estimated_diameter.feet.estimated_diameter_min}`}
+                            </Text>
+                            <Text style={{ alignSelf: 'stretch', fontWeight: '500', fontSize: 14 }}>
+                                {`Kilometers: ${item.estimated_diameter.kilometers.estimated_diameter_min}`}
+                            </Text>
+                            <Text style={{ alignSelf: 'stretch', fontWeight: '500', fontSize: 14 }}>
+                                {`Meters: ${item.estimated_diameter.meters.estimated_diameter_min}`}
+                            </Text>
+                            <Text style={{ alignSelf: 'stretch', fontWeight: '500', fontSize: 14 }}>
+                                {`Miles: ${item.estimated_diameter.miles.estimated_diameter_min}`}
+                            </Text>
+                        </CardSection>
+
+                        <CardSection style = {{ flexDirection: "column", alignSelf: "stretch", padding:5 }}>
+                            <Text style={{ alignSelf: 'stretch', fontWeight: 'bold', fontSize: 12, marginBottom: 5 }}>
+                                NEO Reference ID
+                            </Text>
+                            <Text style={{ alignSelf: 'stretch', fontWeight: '500', fontSize: 14 }}>
+                                {item.neo_reference_id}
+                            </Text>
+                        </CardSection>
+                    </Card>
+                </DisplayModal>
             )
         }
     }

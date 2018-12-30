@@ -34,7 +34,8 @@ const styles = {
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
-    justifyContent: 'center'
+    justifyContent: 'center',
+    elevation: 1
   }
 };
 
