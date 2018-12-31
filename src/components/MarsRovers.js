@@ -8,7 +8,7 @@ import {
     Image,
     View, 
     TouchableOpacity, 
-    FlatList 
+    FlatList
 } from 'react-native';
 import { 
     selectRover,
@@ -22,7 +22,7 @@ import {
     SquareText, 
     Spinner,
     DateInput,
-    PickerWithLabel 
+    Input 
 } from './common';
 
 class MarsRovers extends Component {
@@ -35,8 +35,8 @@ class MarsRovers extends Component {
             activeImgSrc : "",
             sortBy : "SOL",
             selectedSol : this.props.marsInfo.selectedSol,
+            solValidationErr : "",
             currentDate: "2016-05-15",
-            pickerOpen: false,
             isDefaultDate: true,
             isDefaultSol: true
         }
@@ -122,30 +122,39 @@ class MarsRovers extends Component {
         );
     }
 
-    togglePicker(){
-        this.setState({
-            pickerOpen: !this.state.pickerOpen,
-            selectedSol : this.props.marsInfo.selectedSol
-        });
-    }
-
     updateSelectedSol(value){
-        this.setState({
-            selectedSol: value
-        });
+        const reg = /^\d+$/;
+        if( (reg.test(value) && parseInt(value) <= this.props.marsInfo.roverInfo.max_sol) || value.length === 0){
+            this.setState({
+                selectedSol: value,
+                solValidationErr : ""
+            });
+        } else if( !reg.test(value) ){
+            this.setState({
+                selectedSol: value,
+                solValidationErr : "Only numbers allowed!"
+            });
+        } else {
+            this.setState({
+                selectedSol: value,
+                solValidationErr : `Max allowed SOL : ${this.props.marsInfo.roverInfo.max_sol}`
+            });  
+        }
     }
 
     updateSortByValue(value){
         if(this.state.sortBy === 'SOL'){
-            this.togglePicker();
-            this.setState({
-                isDefaultSol: false
-            })
-            this.props.updateSolAndEarthDate({
-                date: 'none',
-                sol: this.state.selectedSol,
-                sortBy: this.state.sortBy
-            });
+            if(this.state.selectedSol.length > 0 ){
+                this.setState({
+                    isDefaultSol: false
+                })
+                this.props.updateSolAndEarthDate({
+                    date: 'none',
+                    sol: this.state.selectedSol,
+                    sortBy: this.state.sortBy
+                });
+                this.props.selectRover( this.props.marsInfo.selectedRover );
+            }
         } else {
             this.setState({
                 currentDate: value,
@@ -156,8 +165,8 @@ class MarsRovers extends Component {
                 sol: 1000,
                 sortBy: this.state.sortBy
             });
+            this.props.selectRover( this.props.marsInfo.selectedRover );
         }
-        this.props.selectRover( this.props.marsInfo.selectedRover );
     }
 
     hasQueryResults(){
@@ -184,7 +193,6 @@ class MarsRovers extends Component {
     }
 
     render() {
-
         return (
             <ScrollView>
                 <Card>
@@ -233,7 +241,7 @@ class MarsRovers extends Component {
                     </CardSection>
                     }
 
-                    {this.props.isNavigated && !this.props.marsInfo.requestInProgress && 
+                    {this.props.isNavigated && 
                         <CardSection style={{flexDirection: 'row', justifyContent: 'space-around'}}>
                             <View style={{justifyContent: 'center'}}>
                                 <TouchableOpacity onPress={this.toggleSortBy.bind(this)}>
@@ -241,17 +249,12 @@ class MarsRovers extends Component {
                                 </TouchableOpacity>
                             </View> 
                             {this.state.sortBy === 'SOL' && 
-                                <PickerWithLabel
+                                <Input
                                     label={`${this.state.sortBy}`}
-                                    selectedValue={this.props.marsInfo.selectedSol}
-                                    maxSol={this.props.marsInfo.roverInfo.max_sol}
                                     placeholder={`Max - ${this.props.marsInfo.roverInfo.max_sol}`}
-                                    confirmButton={this.updateSortByValue.bind(this)}
-                                    togglePicker={this.togglePicker.bind(this)}
-                                    updateValue={this.updateSelectedSol.bind(this)}
-                                    isPickerLaunched={this.state.pickerOpen}
-                                    isDefaultSol={this.state.isDefaultSol}
-                                    pickerValue={this.state.selectedSol}
+                                    onChangeText={this.updateSelectedSol.bind(this)}
+                                    value={`${this.state.selectedSol}`}
+                                    onPress={this.updateSortByValue.bind(this)}
                                 />
                             }
                             {this.state.sortBy !== 'SOL' && 
@@ -265,6 +268,12 @@ class MarsRovers extends Component {
                                     isDefaultDate={this.state.isDefaultDate}
                                 />
                             }  
+                        </CardSection>
+                    }
+
+                    {this.props.isNavigated && this.state.sortBy === 'SOL' && this.state.solValidationErr.length > 0 &&
+                        <CardSection style={{justifyContent: 'center'}}>
+                            <Text style={{textAlign:'center', fontSize:10 ,color: 'red'}}>{this.state.solValidationErr}</Text>
                         </CardSection>
                     }
 

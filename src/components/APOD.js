@@ -8,13 +8,20 @@ class Apod extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            modalVisible : false
+            modalVisible : false,
+            showtext : false
         }
     }
 
     toggleModal (){
         this.setState({
             modalVisible : !this.state.modalVisible
+        });
+    }
+
+    toggleText (){
+        this.setState({
+            showtext : !this.state.showtext
         });
     }
 
@@ -58,10 +65,11 @@ class Apod extends Component {
                 </CardSection>
                 <DisplayModal
                     display= {this.state.modalVisible}
-                    image={ url || "https://api.nasa.gov/images/apod.jpg" }
+                    image={ url }
                     closeModal={this.toggleModal.bind(this)}
-                    showText={true}
+                    showText={this.state.showtext}
                     explanation={explanation}
+                    toggleText={this.toggleText.bind(this)}
                 />
             </Card>
         );

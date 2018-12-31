@@ -94,9 +94,6 @@ export const selectRover = ( roverName ) => {
         roverInfoSet = false;
         dispatch(resetAllCams());
         dispatch(toggleRequestStatus());
-        //dispatch(fetchRoverInfo( roverName ));
-
-        console.log("===========", selectedSortBy);
         
         cameraNames.forEach((camera, index) => {
             dispatch(fetchRoverImages(roverName, camera, selectedSol, selectedEarthDate, selectedSortBy));
