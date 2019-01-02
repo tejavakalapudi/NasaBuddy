@@ -1,10 +1,11 @@
 import React, { Component, PropTypes } from "react";
-import { Image, ScrollView, View, TouchableWithoutFeedback } from "react-native";
+import { Image, View } from "react-native";
 import ImageLoad from 'react-native-image-placeholder';
 
 class ScaledImage extends Component {
     constructor(props) {
         super(props);
+
         this.state = {
             realImageLoaded : false
         };
@@ -38,15 +39,11 @@ class ScaledImage extends Component {
 
     render() {
         return (
-            <TouchableWithoutFeedback onPress={this.props.toggleText}>
-                <View>
-                    <ImageLoad
-                        style={{ height: this.state.height || this.props.width, width: this.state.width || this.props.width }}
-                        source={{ uri: this.props.uri }}
-                        isShowActivity={false}
-                    />
-                </View>
-            </TouchableWithoutFeedback>
+            <ImageLoad
+                style={{ height: this.state.height || this.props.width, width: this.state.width || this.props.width }}
+                source={{ uri: this.props.uri }}
+                isShowActivity={false}
+            />
         );
     }
 }
