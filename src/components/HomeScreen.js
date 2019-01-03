@@ -25,12 +25,6 @@ class HomeScreen extends Component {
     }
 }
 
-const styles = {
-    containerStyle : {
-
-    }
-}
-
 const mapStateToProps = (state) => {
     return { 
         apodInfo : state.apodInfo,

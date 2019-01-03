@@ -28,6 +28,7 @@ class NeoInfoByDate extends Component {
 
     renderModal(){
         const item = this.state.activeNeo;
+        console.log("==============", item);
         if( item ){
             return(
                 <DisplayModal
@@ -52,8 +53,8 @@ class NeoInfoByDate extends Component {
                             <Text style={{ alignSelf: 'stretch', fontWeight: 'bold', fontSize: 12, marginBottom: 5 }}>
                                 Potentially Hazardous
                             </Text>
-                            <Text style={{ alignSelf: 'stretch', fontWeight: '500', fontSize: 14, textTransform: 'capitalize' }}>
-                                {JSON.stringify(item.is_potentially_hazardous_asteroid)}
+                            <Text style={{ alignSelf: 'stretch', fontWeight: '500', fontSize: 14 }}>
+                                {item.is_potentially_hazardous_asteroid ? 'Yes' : 'No'}
                             </Text>
                         </CardSection>
 

@@ -12,7 +12,7 @@ import {
     Platform,
     PermissionsAndroid
 } from 'react-native';
-import { ScaledImage } from '../common';
+import { ScaledImage } from './ScaledImage';
 import RNFetchBlob from 'rn-fetch-blob';
 
 class DisplayModal extends Component {
@@ -113,8 +113,12 @@ class DisplayModal extends Component {
                 </TouchableWithoutFeedback>
                 }
                 {children && 
-                    <View style={{flex:1,justifyContent: 'center', top: 20}}>
-                        {children}
+                    <View style={{
+                        paddingTop: 70
+                    }}>
+                        <ScrollView>
+                            {children}
+                        </ScrollView>
                     </View>
                 }
         
@@ -137,7 +141,7 @@ const styles = StyleSheet.create({
     closeButton : {
         position: 'absolute',
         right: 20,
-        top: 50,
+        top: 40,
     },
     textStyle: {
         fontSize: 12, 
