@@ -9,7 +9,8 @@ import {
     Dimensions, 
     CameraRoll, 
     Alert, 
-    Platform
+    Platform,
+    PermissionsAndroid
 } from 'react-native';
 import { ScaledImage } from '../common';
 import RNFetchBlob from 'rn-fetch-blob';
@@ -18,28 +19,44 @@ class DisplayModal extends Component {
 
     constructor(props) {
         super(props);
-        this.state = {
-            showImgSaveModal : false
-        }
-
         this.saveImageToCameraRoll = this.saveImageToCameraRoll.bind(this);
     }
+
+
+    requestExternalStoragePermission = async (image) => {
+        try {
+          const granted = await PermissionsAndroid.request(
+            PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+            {
+                title: 'NasaBuddy Permission',
+                message: 'NasaBuddy needs access to your storage ' +
+                    'so you can save your photos'
+            },
+          );
+            if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+                RNFetchBlob
+                .config({
+                    fileCache : true,
+                    appendExt : 'jpg'
+                })
+                .fetch('GET', image)
+                .then((res) => {
+                    CameraRoll.saveToCameraRoll(res.path())
+                    .then( response => Alert.alert('Success', 'Photo added to camera roll!'))
+                    .catch(err => console.log('err:', err))
+                });
+            }
+        } catch (err) {
+          console.error('Failed to request permission ', err);
+          return null;
+        }
+    };
 
     saveImageToCameraRoll(image){
         CameraRoll.saveToCameraRoll(image);
 
         if (Platform.OS === 'android') {
-            RNFetchBlob
-            .config({
-              fileCache : true,
-              appendExt : 'jpg'
-            })
-            .fetch('GET', image)
-            .then((res) => {
-              CameraRoll.saveToCameraRoll(res.path())
-                .then(Alert.alert('Success', 'Photo added to camera roll!'))
-                .catch(err => console.log('err:', err))
-            })
+            this.requestExternalStoragePermission(image);
           } else {
             CameraRoll.saveToCameraRoll(image)
             .then(Alert.alert('Success', 'Photo added to camera roll!'))
