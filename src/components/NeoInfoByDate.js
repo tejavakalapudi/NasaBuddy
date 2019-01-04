@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { Text, ScrollView, FlatList, TouchableOpacity, View, Modal } from 'react-native';
+import { Text, ScrollView, FlatList, TouchableOpacity, View } from 'react-native';
 import { connect } from 'react-redux';
-import { Card, CardSection, Button, DisplayModal } from './common';
+import { Card, CardSection, DisplayModal } from './common';
 
 class NeoInfoByDate extends Component {
 
@@ -28,7 +28,6 @@ class NeoInfoByDate extends Component {
 
     renderModal(){
         const item = this.state.activeNeo;
-        console.log("==============", item);
         if( item ){
             return(
                 <DisplayModal

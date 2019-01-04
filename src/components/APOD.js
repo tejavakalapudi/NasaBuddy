@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { Text, ScrollView, Image, Linking, View, TouchableOpacity } from 'react-native';
-import { Card, CardSection, Button, DisplayModal} from './common';
+import { Text, Linking, TouchableOpacity, Dimensions } from 'react-native';
+import { Card, CardSection, DisplayModal} from './common';
 import ImageLoad from 'react-native-image-placeholder';
 
 class Apod extends Component {
@@ -59,6 +59,7 @@ class Apod extends Component {
                 </CardSection>
                 <CardSection style={ imageInfoContainerStyle }>
                     <Text style={ imageInfoTextTitle }>{ title }</Text>
+                    {copyright && <Text>{`Copyright: ${copyright}`}</Text>}
                     <TouchableOpacity onPress={() => Linking.openURL(hdurl)}>
                         <Text style={{ fontWeight: 'bold', fontSize: 12}}>Click for HD</Text>
                     </TouchableOpacity>
@@ -86,7 +87,7 @@ const styles = {
       color: 'grey',
     },
     imageContainerStyle:{
-        height: 300
+        height: Dimensions.get('window').height / 2
     },
     imageStyle: {
         flex: 1,

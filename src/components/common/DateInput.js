@@ -1,5 +1,5 @@
 import React from 'react';
-import { TextInput, View, Text } from 'react-native';
+import { View, Text } from 'react-native';
 import DatePicker from 'react-native-datepicker';
 
 const DateInput = ({ label, onDateChange, placeholder, currentDate, minDate, maxDate, isDefaultDate }) => {

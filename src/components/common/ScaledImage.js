@@ -1,5 +1,5 @@
-import React, { Component, PropTypes } from "react";
-import { Image, View } from "react-native";
+import React, { Component } from "react";
+import { Image } from "react-native";
 import ImageLoad from 'react-native-image-placeholder';
 
 class ScaledImage extends Component {
